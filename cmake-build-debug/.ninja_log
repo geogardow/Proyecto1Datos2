@@ -1,0 +1,5 @@
+# ninja log v5
+0	374	1647477373646660626	CMakeFiles/Proyecto1Datos2.dir/main.cpp.o	b786c59ead765fbd
+0	381	1647477373654661879	CMakeFiles/Proyecto1Datos2.dir/memory.cpp.o	fbc4d5c3394d0a23
+2	300	1647477903639125802	CMakeFiles/Proyecto1Datos2.dir/memory.cpp.o	28f5d5369a428676
+1	301	1647477903639125802	CMakeFiles/Proyecto1Datos2.dir/main.cpp.o	e0d12203c3526733

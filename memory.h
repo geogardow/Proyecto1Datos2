@@ -4,10 +4,15 @@
 
 #ifndef PROYECTO1DATOS2_MEMORY_H
 #define PROYECTO1DATOS2_MEMORY_H
-
+#include <string>
 
 class memory {
-
+private:
+    std::string var;
+public:
+    memory();
+    void setVar(std::string v);
+    void varToString();
 };
 
 
