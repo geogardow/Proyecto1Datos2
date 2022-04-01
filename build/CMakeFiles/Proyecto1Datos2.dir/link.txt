@@ -1,0 +1,1 @@
+/bin/x86_64-linux-gnu-g++-9  -pthread -g CMakeFiles/Proyecto1Datos2.dir/main.cpp.o CMakeFiles/Proyecto1Datos2.dir/memory.cpp.o -o Proyecto1Datos2   -L/usr/local/lib  -Wl,-rpath,/usr/local/lib -L/usr/local/lib -pthread -lwx_baseu_net-3.1 -lwx_gtk3u_core-3.1 -lwx_baseu-3.1 

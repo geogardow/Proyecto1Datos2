@@ -1,0 +1,3 @@
+/home/geogardow/Desktop/Proyecto1Datos2/build/CMakeFiles/Proyecto1Datos2.dir
+/home/geogardow/Desktop/Proyecto1Datos2/build/CMakeFiles/edit_cache.dir
+/home/geogardow/Desktop/Proyecto1Datos2/build/CMakeFiles/rebuild_cache.dir

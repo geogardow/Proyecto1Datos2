@@ -13,6 +13,10 @@
 #define SERV_HOST_ADDR "192.168.0.35"     /* IP, only IPV4 support  */
 #define BACKLOG         5                 /* Max. client pending connections  */
 
+server::server(){
+
+}
+
 int server::start(){  
 
     /* socket creation */
