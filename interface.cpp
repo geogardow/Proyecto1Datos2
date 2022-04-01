@@ -19,7 +19,7 @@ class MyFrame : public wxFrame
 public:
     MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
     wxPanel* panel = new wxPanel(this);
-    Button* cardButton = new Button(1,1,50,60,panel);
+    void CreateButtons();
     
     //Button *cardButton = new Button(1,1,50,60,panel);
 
@@ -28,7 +28,6 @@ private:
     void OnHello(wxCommandEvent& event);
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
-    void CreateButtons();
 
 };
 enum
@@ -43,6 +42,7 @@ bool MyApp::OnInit()
     frame->Show(true);
     frame->SetMinSize(wxSize(1200, 900));
     frame->SetMaxSize(wxSize(1200, 900));
+    frame->CreateButtons();
     return true;
 }
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
@@ -87,6 +87,17 @@ void MyFrame::OnHello(wxCommandEvent& event)
 }
 void MyFrame::CreateButtons()
 {
-    
+    int x = 50;
+    int y = 50;
+    for(int i = 1; i < 9 ; i++){
+        for (int j = 1; j < 9 ; j++){
+            Button* cardButton = new Button(x,y,i,j,panel);
+            x = x + 100;
+            //btn->SetFocus();
+            //Connect(m*10 +n, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MyFrame::OnClick));
+        }
+        x = 50;
+        y = y + 90;
+    }
 }
 

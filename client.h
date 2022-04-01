@@ -14,14 +14,14 @@
 
 class client {
 private:
-    std::string buf_tx;      
-    std::string buf_rx;
+    char buf_tx;      
+    char buf_rx;
     int sockfd; 
     struct sockaddr_in servaddr;
 
 public:
     client();
-    int sendRequest(std::string position);
+    int sendRequest(char position);
 };
 
 #endif //PROYECTO1DATOS2_CLIENT_H

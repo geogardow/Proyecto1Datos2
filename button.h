@@ -14,7 +14,6 @@ private:
     int x, y, i, j;
     wxPanel* panel;
     wxBitmapButton* cardButton;
-    //panel, i*10+j, {gammasoft_64x64_xpm}, {50, 60}
 
 public:
     Button(int x, int y, int i, int j, wxPanel* panel);

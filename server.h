@@ -18,8 +18,8 @@ private:
     unsigned int len;
     struct sockaddr_in servaddr, client; 
     int  len_rx, len_tx = 0;
-    std::string buff_tx = "Hello client, I am the server";
-    std::string buff_rx;
+    char buff_tx;
+    char buff_rx;
 
 public:
     server();

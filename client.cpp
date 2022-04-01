@@ -9,16 +9,25 @@
 #include <unistd.h>
 #include "client.h"
 
-#define SERVER_ADDRESS  "192.168.0.35"
+#define SERVER_ADDRESS  "192.168.3.105"
 #define PORT            8080 
+
+int main(int argc, char const *argv[])
+{
+    client c = client();
+    c.sendRequest('H');
+    return 0;
+}
+
 
 client::client(){
     
 }
 
-int client::sendRequest(std::string position){ 
+int client::sendRequest(char position){ 
 
     /* Socket creation */
+    buf_tx=position;
     sockfd = socket(AF_INET, SOCK_STREAM, 0); 
     if (sockfd == -1) 
     { 
@@ -54,4 +63,6 @@ int client::sendRequest(std::string position){
        
     /* close the socket */
     close(sockfd); 
+    
+    return 0;
 } 
