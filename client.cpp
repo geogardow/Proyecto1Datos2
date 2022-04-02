@@ -15,7 +15,8 @@
 int main(int argc, char const *argv[])
 {
     client c = client();
-    c.sendRequest('H');
+    c.request.ID = 11;
+    c.sendRequest(c.request);
     return 0;
 }
 
@@ -24,7 +25,7 @@ client::client(){
     
 }
 
-int client::sendRequest(char position){ 
+int client::sendRequest(struct message position){ 
 
     /* Socket creation */
     buf_tx=position;
@@ -57,9 +58,9 @@ int client::sendRequest(char position){
     printf("connected to the server..\n"); 
   
     /* send test sequences*/
-    write(sockfd, (char *)&buf_tx, sizeof(buf_tx));     
-    read(sockfd, (char *)&buf_rx, sizeof(buf_rx));
-    printf("CLIENT:Received: %s \n", (char *)&buf_rx);
+    write(sockfd, (struct message *)&buf_tx, sizeof(buf_tx));     
+    read(sockfd, (struct message *)&buf_rx, sizeof(buf_rx));
+    printf("CLIENT:Received: %d \n", ((struct message *)&buf_rx)->ID);
        
     /* close the socket */
     close(sockfd); 

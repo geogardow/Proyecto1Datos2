@@ -20,8 +20,6 @@ public:
     MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
     wxPanel* panel = new wxPanel(this);
     void CreateButtons();
-    
-    //Button *cardButton = new Button(1,1,50,60,panel);
 
 private:
        
@@ -93,8 +91,6 @@ void MyFrame::CreateButtons()
         for (int j = 1; j < 9 ; j++){
             Button* cardButton = new Button(x,y,i,j,panel);
             x = x + 100;
-            //btn->SetFocus();
-            //Connect(m*10 +n, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MyFrame::OnClick));
         }
         x = 50;
         y = y + 90;

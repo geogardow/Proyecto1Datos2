@@ -102,9 +102,9 @@ int server::start()
                 }
                 else
                 {
-                    buff_tx = 'D';
-                    write(connfd, (char *)&buff_tx, strlen((char *)&buff_tx));
-                    printf("[SERVER]: %s \n", (char *)&buff_rx);
+                    buff_tx.ID=20;
+                    write(connfd, (struct message *)&buff_tx, sizeof(buff_tx));
+                    printf("[SERVER]: %d \n", ((struct message *)&buff_rx)->ID);
                     close(connfd);
                     break;
                 }

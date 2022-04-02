@@ -14,14 +14,18 @@
 
 class client {
 private:
-    char buf_tx;      
-    char buf_rx;
+    struct message {
+        int ID;
+    };
+    struct message buf_tx;      
+    struct message buf_rx;
     int sockfd; 
     struct sockaddr_in servaddr;
 
 public:
     client();
-    int sendRequest(char position);
+    struct message request;
+    int sendRequest(struct message position);
 };
 
 #endif //PROYECTO1DATOS2_CLIENT_H

@@ -18,8 +18,11 @@ private:
     unsigned int len;
     struct sockaddr_in servaddr, client; 
     int  len_rx, len_tx = 0;
-    char buff_tx;
-    char buff_rx;
+    struct message {
+        int ID;
+    };
+    struct message buff_tx;
+    struct message buff_rx;
 
 public:
     server();
