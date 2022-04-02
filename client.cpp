@@ -12,15 +12,6 @@
 #define SERVER_ADDRESS  "192.168.3.105"
 #define PORT            8080 
 
-int main(int argc, char const *argv[])
-{
-    client c = client();
-    c.request.ID = 11;
-    c.sendRequest(c.request);
-    return 0;
-}
-
-
 client::client(){
     
 }
@@ -35,10 +26,6 @@ int client::sendRequest(struct message position){
         printf("CLIENT: socket creation failed...\n"); 
         return -1;  
     } 
-    else
-    {
-        printf("CLIENT: Socket successfully created..\n"); 
-    }
     
     /* memory space cleaning */
     memset(&servaddr, 0, sizeof(servaddr));
@@ -60,7 +47,31 @@ int client::sendRequest(struct message position){
     /* send test sequences*/
     write(sockfd, (struct message *)&buf_tx, sizeof(buf_tx));     
     read(sockfd, (struct message *)&buf_rx, sizeof(buf_rx));
-    printf("CLIENT:Received: %d \n", ((struct message *)&buf_rx)->ID);
+    instruction = ((struct message *)&buf_rx)->ID;
+    printf("CLIENT:Received: %d \n", instruction);
+
+    if (instruction == 0)
+    {
+        printf("CLIENT: Falta 1 carta de presionar \n");
+        //objeto ((struct message *)&buf_rx)->Data;
+        //cambiar imagen de boton
+    }
+    else if (instruction == -1)
+    {
+        printf("CLIENT: Son iguales \n");
+        //objeto ((struct message *)&buf_rx)->Data;
+        //cambiar imagen de boton
+        //desabilitar las cartas
+    } 
+    else
+    {
+        printf("CLIENT: No son iguales \n");
+        //objeto ((struct message *)&buf_rx)->Data;
+        //cambiar imagen de boton
+        //restaurar botones
+    }
+    
+    
        
     /* close the socket */
     close(sockfd); 

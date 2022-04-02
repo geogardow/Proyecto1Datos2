@@ -23,6 +23,10 @@ private:
     };
     struct message buff_tx;
     struct message buff_rx;
+    int idCard1=0;
+    int idCard2=0;
+    int idPic1=0;
+    int idPic2=0;
 
 public:
     server();

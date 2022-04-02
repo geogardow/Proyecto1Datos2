@@ -102,9 +102,36 @@ int server::start()
                 }
                 else
                 {
-                    buff_tx.ID=20;
-                    write(connfd, (struct message *)&buff_tx, sizeof(buff_tx));
-                    printf("[SERVER]: %d \n", ((struct message *)&buff_rx)->ID);
+                    if (idCard1 == 0)
+                    {
+                        idCard1 = ((struct message *)&buff_rx)->ID;
+                        idPic1 = 10; //aqui se pone el id de la imagen mediante el algoritmo de busqueda
+                        printf("[SERVER]: %d \n", idCard1);
+                        buff_tx.ID=0; //significa que todavía no hay acción
+                        //buff_tx.Data=objeto buscado con id1
+                        write(connfd, (struct message *)&buff_tx, sizeof(buff_tx));
+                    }
+                    else
+                    {
+                        idCard2 = ((struct message *)&buff_rx)->ID;
+                        idPic2 = 10; //aqui se pone el id de la imagen mediante el algoritmo de busqueda
+                        printf("[SERVER]: %d \n", idCard2);
+                        if (idPic1 == idPic2)
+                        {
+                            buff_tx.ID=-1;
+                        }
+                        else
+                        {
+                            buff_tx.ID=-2;
+                        }
+                        //buff_tx.Data=objeto buscado con id2
+                        write(connfd, (struct message *)&buff_tx, sizeof(buff_tx));
+                        idCard1 = 0;
+                        idPic1 = 0;
+                        idCard2 = 0;
+                        idPic2 = 0;
+                    }
+                    
                     close(connfd);
                     break;
                 }

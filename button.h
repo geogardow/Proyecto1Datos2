@@ -13,10 +13,10 @@ class Button {
 private:
     int x, y, i, j;
     wxPanel* panel;
-    wxBitmapButton* cardButton;
 
 public:
     Button(int x, int y, int i, int j, wxPanel* panel);
+    wxBitmapButton* cardButton;
     //void setPic();
     //void sendRequest();    
 };

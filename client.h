@@ -13,19 +13,20 @@
 #define PROYECTO1DATOS2_CLIENT_H
 
 class client {
-private:
+public:
+    client();
+    int sockfd; 
+    struct sockaddr_in servaddr;
     struct message {
         int ID;
     };
-    struct message buf_tx;      
-    struct message buf_rx;
-    int sockfd; 
-    struct sockaddr_in servaddr;
-
-public:
-    client();
     struct message request;
     int sendRequest(struct message position);
+    int instruction = 0;
+
+private:
+    struct message buf_tx;      
+    struct message buf_rx;
 };
 
 #endif //PROYECTO1DATOS2_CLIENT_H

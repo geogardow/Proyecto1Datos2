@@ -2,6 +2,7 @@
 #include <wx/bmpbuttn.h>
 #include "button.h"
 #include "button.cpp"
+#include "client.cpp"
 //#include "star.png"
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
@@ -20,12 +21,14 @@ public:
     MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
     wxPanel* panel = new wxPanel(this);
     void CreateButtons();
+    client c = client();
 
 private:
        
     void OnHello(wxCommandEvent& event);
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
+    void OnClick(wxCommandEvent& event);
 
 };
 enum
@@ -36,7 +39,7 @@ wxIMPLEMENT_APP(MyApp);
 
 bool MyApp::OnInit()
 {
-    MyFrame *frame = new MyFrame( "Memory Game", wxPoint(50, 50), wxSize(1200, 900) );
+    MyFrame *frame = new MyFrame( "Memory Game", wxPoint(50, 50), wxSize(1200, 900));
     frame->Show(true);
     frame->SetMinSize(wxSize(1200, 900));
     frame->SetMaxSize(wxSize(1200, 900));
@@ -83,6 +86,15 @@ void MyFrame::OnHello(wxCommandEvent& event)
 {
     wxLogMessage("Algoritmos y Estructuras de Datos 2");
 }
+void MyFrame::OnClick(wxCommandEvent& event)
+{
+    struct client::message request;    
+    int id = event.GetId();
+    request.ID=id;
+    c.sendRequest(request);
+    
+
+}
 void MyFrame::CreateButtons()
 {
     int x = 50;
@@ -90,6 +102,7 @@ void MyFrame::CreateButtons()
     for(int i = 1; i < 9 ; i++){
         for (int j = 1; j < 9 ; j++){
             Button* cardButton = new Button(x,y,i,j,panel);
+            Connect(i*10+j, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MyFrame::OnClick));
             x = x + 100;
         }
         x = 50;
