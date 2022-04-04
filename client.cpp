@@ -8,15 +8,16 @@
 #include <arpa/inet.h> 
 #include <unistd.h>
 #include "client.h"
+#include "card.h"
 
-#define SERVER_ADDRESS  "192.168.3.105"
+#define SERVER_ADDRESS  "192.168.37.206"
 #define PORT            8080 
 
 client::client(){
     
 }
 
-int client::sendRequest(struct message position){ 
+struct client::message  client::sendRequest(struct message position){ 
 
     /* Socket creation */
     buf_tx=position;
@@ -24,7 +25,6 @@ int client::sendRequest(struct message position){
     if (sockfd == -1) 
     { 
         printf("CLIENT: socket creation failed...\n"); 
-        return -1;  
     } 
     
     /* memory space cleaning */
@@ -39,7 +39,6 @@ int client::sendRequest(struct message position){
     if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) != 0) 
     { 
         printf("connection with the server failed...\n");  
-        return -1;
     } 
     
     printf("connected to the server..\n"); 
@@ -49,32 +48,12 @@ int client::sendRequest(struct message position){
     read(sockfd, (struct message *)&buf_rx, sizeof(buf_rx));
     instruction = ((struct message *)&buf_rx)->ID;
     printf("CLIENT:Received: %d \n", instruction);
-
-    if (instruction == 0)
-    {
-        printf("CLIENT: Falta 1 carta de presionar \n");
-        //objeto ((struct message *)&buf_rx)->Data;
-        //cambiar imagen de boton
-    }
-    else if (instruction == -1)
-    {
-        printf("CLIENT: Son iguales \n");
-        //objeto ((struct message *)&buf_rx)->Data;
-        //cambiar imagen de boton
-        //desabilitar las cartas
-    } 
-    else
-    {
-        printf("CLIENT: No son iguales \n");
-        //objeto ((struct message *)&buf_rx)->Data;
-        //cambiar imagen de boton
-        //restaurar botones
-    }
-    
-    
+    struct message answer;
+    answer = *((struct message *)&buf_rx);
        
     /* close the socket */
     close(sockfd); 
     
-    return 0;
+    return answer
+    ;
 } 

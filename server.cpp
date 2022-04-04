@@ -11,8 +11,9 @@
 #include <iostream>
 
 #define SERV_PORT 8080                 /* port */
-#define SERV_HOST_ADDR "192.168.3.105" /* IP, only IPV4 support  */
+#define SERV_HOST_ADDR "192.168.37.206"     /* IP, only IPV4 support  */
 #define BACKLOG 5                      /* Max. client pending connections  */
+
 
 int main(int argc, char const *argv[])
 {
@@ -108,7 +109,7 @@ int server::start()
                         idPic1 = 10; //aqui se pone el id de la imagen mediante el algoritmo de busqueda
                         printf("[SERVER]: %d \n", idCard1);
                         buff_tx.ID=0; //significa que todavía no hay acción
-                        //buff_tx.Data=objeto buscado con id1
+                        buff_tx.loadedPic=""; //buff_tx.Data=objeto buscado con id1
                         write(connfd, (struct message *)&buff_tx, sizeof(buff_tx));
                     }
                     else
@@ -124,7 +125,7 @@ int server::start()
                         {
                             buff_tx.ID=-2;
                         }
-                        //buff_tx.Data=objeto buscado con id2
+                        buff_tx.loadedPic=""; //buff_tx.Data=objeto buscado con id2
                         write(connfd, (struct message *)&buff_tx, sizeof(buff_tx));
                         idCard1 = 0;
                         idPic1 = 0;

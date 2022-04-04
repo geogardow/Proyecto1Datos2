@@ -8,6 +8,8 @@
 #include <arpa/inet.h> 
 #include <unistd.h>
 #include <string>
+#include "card.h"
+using namespace std;
 
 #ifndef PROYECTO1DATOS2_SERVER_H
 #define PROYECTO1DATOS2_SERVER_H
@@ -20,6 +22,7 @@ private:
     int  len_rx, len_tx = 0;
     struct message {
         int ID;
+        string loadedPic;
     };
     struct message buff_tx;
     struct message buff_rx;

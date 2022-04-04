@@ -8,6 +8,8 @@
 #include <arpa/inet.h> 
 #include <unistd.h>
 #include <string>
+#include "card.h"
+using namespace std;
 
 #ifndef PROYECTO1DATOS2_CLIENT_H
 #define PROYECTO1DATOS2_CLIENT_H
@@ -19,9 +21,9 @@ public:
     struct sockaddr_in servaddr;
     struct message {
         int ID;
+        string loadedPic;
     };
-    struct message request;
-    int sendRequest(struct message position);
+    struct message sendRequest(struct message position);
     int instruction = 0;
 
 private:
