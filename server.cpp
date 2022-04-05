@@ -11,7 +11,7 @@
 #include <iostream>
 
 #define SERV_PORT 8080                 /* port */
-#define SERV_HOST_ADDR "192.168.37.206"     /* IP, only IPV4 support  */
+#define SERV_HOST_ADDR "192.168.0.34"     /* IP, only IPV4 support  */
 #define BACKLOG 5                      /* Max. client pending connections  */
 
 

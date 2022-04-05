@@ -10,14 +10,14 @@
 #include "client.h"
 #include "card.h"
 
-#define SERVER_ADDRESS  "192.168.37.206"
+#define SERVER_ADDRESS  "192.168.0.34"
 #define PORT            8080 
 
 client::client(){
     
 }
 
-struct client::message  client::sendRequest(struct message position){ 
+struct client::message*  client::sendRequest(struct message position){ 
 
     /* Socket creation */
     buf_tx=position;
@@ -48,8 +48,8 @@ struct client::message  client::sendRequest(struct message position){
     read(sockfd, (struct message *)&buf_rx, sizeof(buf_rx));
     instruction = ((struct message *)&buf_rx)->ID;
     printf("CLIENT:Received: %d \n", instruction);
-    struct message answer;
-    answer = *((struct message *)&buf_rx);
+    struct message* answer;
+    answer = ((struct message *)&buf_rx);
        
     /* close the socket */
     close(sockfd); 

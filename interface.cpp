@@ -21,7 +21,7 @@ class MyFrame : public wxFrame
 public:
     MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
     wxPanel* panel = new wxPanel(this);
-    Button* buttons[8][8];
+    Button* buttons[9][9];
     void CreateButtons();
     client c = client();
     int lastId;
@@ -111,12 +111,12 @@ void MyFrame::OnClick(wxCommandEvent& event)
     struct client::message request;    
     int idPos;
     idPos = event.GetId();
-    struct client::message answer;
+    struct client::message* answer;
     request.ID=idPos;
     request.loadedPic= "";
-    answer = c.sendRequest(request);
+    answer = ((struct client::message *)(c.sendRequest(request)));
     int instruction;
-    instruction = answer.ID;
+    instruction = answer->ID;
     buttons[idPos/10][idPos%10]->cardButton->SetBitmapLabel({gammasoft_64x64_xpm}); //reemplazar {gammasoft_64x64_xpm} por wxBitmap(answer->loadedPic, wxBITMAP_TYPE_PNG)
      
     if (instruction == 0)

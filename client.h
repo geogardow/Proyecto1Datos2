@@ -23,7 +23,7 @@ public:
         int ID;
         string loadedPic;
     };
-    struct message sendRequest(struct message position);
+    struct message* sendRequest(struct message position);
     int instruction = 0;
 
 private:
