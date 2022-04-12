@@ -1,7 +1,0 @@
-# ninja log v5
-1	301	1647477903639125802	CMakeFiles/Proyecto1Datos2.dir/main.cpp.o	e0d12203c3526733
-2	300	1647477903639125802	CMakeFiles/Proyecto1Datos2.dir/memory.cpp.o	28f5d5369a428676
-1	298	1648258247939994225	CMakeFiles/Proyecto1Datos2.dir/main.cpp.o	20be3be775956b0b
-2	488	1648258248127999155	CMakeFiles/Proyecto1Datos2.dir/memory.cpp.o	bf04be3fec7c0567
-2	261	1648258393473474217	CMakeFiles/Proyecto1Datos2.dir/main.cpp.o	20be3be775956b0b
-261	375	1648258393589474114	Proyecto1Datos2	cc1b1a5ed8f83d6d

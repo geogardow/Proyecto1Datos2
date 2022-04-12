@@ -9,6 +9,8 @@
 #include <unistd.h>
 #include <string>
 #include "card.h"
+#include "message.cpp"
+#include "image.cpp"
 using namespace std;
 
 #ifndef PROYECTO1DATOS2_SERVER_H
@@ -20,10 +22,8 @@ private:
     unsigned int len;
     struct sockaddr_in servaddr, client; 
     int  len_rx, len_tx = 0;
-    struct message {
-        int ID;
-        string loadedPic;
-    };
+    image img = image();
+    char picture[30000];
     struct message buff_tx;
     struct message buff_rx;
     int idCard1=0;

@@ -16,8 +16,6 @@ private:
 public:
     Button(int x, int y, int i, int j, wxPanel* panel, wxBitmap star);
     wxBitmapButton* cardButton;
-    //void setPic();
-    //void sendRequest();    
 };
 
 

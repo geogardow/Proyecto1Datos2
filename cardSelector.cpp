@@ -8,7 +8,7 @@
 #include <cstdlib>
 #include <stdlib.h>
 #include "cardSelector.h"
-
+#include "card.h"
 
 using namespace std;
 fstream file;
@@ -19,17 +19,17 @@ struct empty
 
 card cardSelector::loadFromFile(int i, int j){
     file.open("cards.txt", ios::in | ios::out | ios::binary);
-        file.seekg((i-1)*(4)*sizeof(empty)+(j-1)*sizeof(empty), ios::beg);
-        char *buffer = (char*) malloc(sizeof(empty));
-        file.read(buffer, sizeof(empty));
-        empty* card = (empty*) buffer;
-        card newCard = card(card->i,card->j, card->idPic, card->status);
-        newCard.getImage(card->idPic);
-        newCard.print();
-        file.close();
-        free(buffer);
-        buffer = NULL;
-        return newCard;
+    file.seekg((i-1)*(4)*sizeof(empty)+(j-1)*sizeof(empty), ios::beg);
+    char *buffer = (char*) malloc(sizeof(empty));
+    file.read(buffer, sizeof(empty));
+    empty* card = (empty*) buffer;
+    card newCard = card(card->i,card->j, card->idPic, card->status);
+    newCard.getImage(card->idPic);
+    newCard.print();
+    file.close();
+    free(buffer);
+    buffer = NULL;
+    return newCard;
 }
 
 void cardSelector::loadToFile(int i, int j, int idPic, int status){
@@ -66,7 +66,7 @@ card cardSelector::getCard(int i, int j){
 }
 
 card cardSelector::replace(int i, int j){
-    int n = rand()%10;
+    int n = rand() % 10;
     cout<<"Delete position "<<n<<endl;
     cout<<"object deleted ";
     this->vectorCard[n].print();
@@ -88,9 +88,38 @@ card cardSelector::replace(int i, int j){
 
 }
 void cardSelector::createVector(){
-    for(int i = 1 ; i <= 2; i++){
-        for(int j = 1; j<=5; j++){
-            this->vectorCard.push_back(loadFromFile(i,j));
+    std::vector<int> usedPairs;
+    int m = 0;
+    while (m != 10)
+    {
+        int i = rand() % 8 + 1;
+        int j = rand() % 8 + 1;
+        int pair = i*10+j;
+
+        if (usedPairs.size() == 0)
+        {
+            usedPairs.push_back(pair);
+            this->vectorCard.push_back(loadFromFile(i,j);
+            m++;
+        } 
+        else
+        {
+            int n = 0;
+            bool canBeUsed = true;
+            while (n != usedPairs.size())
+            {
+                if (usedPairs[n] == pair)
+                {
+                    canBeUsed = false;
+                }
+                n++; 
+            }
+            if (canBeUsed)
+            {
+                usedPairs.push_back(pair);
+                this->vectorCard.push_back(loadFromFile(i,j); 
+                m++;
+            }
         }
     }
 }
@@ -113,4 +142,80 @@ void cardSelector::createFile(){
             } 
         }
     }  
+}
+string cardSelector::choosePic(int idPic){
+    switch (idPic)
+    {
+    case 1:
+        return "assets/bonus.png";
+    case 2:
+        return "assets/double.png";
+    case 3:
+        return "assets/switch.png";
+    case 4:
+        return "assets/skull.png";
+    case 5:
+        return "assets/aguacate.png";
+    case 6:
+        return "assets/ajo.png";
+    case 7:
+        return "assets/arandano.png";
+    case 8:
+        return "assets/banano.png";
+    case 9:
+        return "assets/berenjena.png";
+    case 10:
+        return "assets/cebolla.png";
+    case 11:
+        return "assets/cereza.png";
+    case 12:
+        return "assets/chile.png";
+    case 13:
+        return "assets/cilantro.png";
+    case 14:
+        return "assets/frambuesa.png";
+    case 15:
+        return "assets/fresa.png";
+    case 16:
+        return "assets/kiwi.png";
+    case 17:
+        return "assets/lechuga.png";
+    case 18:
+        return "assets/lima.png";
+    case 19:
+        return "assets/limon.png";
+    case 20:
+        return "assets/maiz.png";
+    case 21:
+        return "assets/manzana.png";
+    case 22:
+        return "assets/melocoton.png";
+    case 23:
+        return "assets/melon.png";
+    case 24:
+        return "assets/mora.png";
+    case 25:
+        return "assets/naranja.png";
+    case 26:
+        return "assets/pepino.png";
+    case 27:
+        return "assets/pera.png";
+    case 28:
+        return "assets/pina.png";
+    case 29:
+        return "assets/rabano.png";
+    case 30:
+        return "assets/remolacha.png";
+    case 31:
+        return "assets/sandia.png";
+    case 32:
+        return "assets/tomate.png";
+    case 33:
+        return "assets/uva.png";
+    case 34:
+        return "assets/zanahoria.png";
+    default:
+        cout<<"Error, ID desconocido"<<endl;
+        return "";
+    }
 }

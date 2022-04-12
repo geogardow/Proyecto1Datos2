@@ -11,7 +11,7 @@
 #include <iostream>
 
 #define SERV_PORT 8080                 /* port */
-#define SERV_HOST_ADDR "192.168.0.34"     /* IP, only IPV4 support  */
+#define SERV_HOST_ADDR "192.168.0.8"   /* IP, only IPV4 support  */
 #define BACKLOG 5                      /* Max. client pending connections  */
 
 
@@ -103,19 +103,35 @@ int server::start()
                 }
                 else
                 {
+                    img.encodeImage("uva.png");
+                    char imgSend[30000];
+                    int i = 0;
+                    while (img.img.size() > 0)
+                    {
+                        char pos = img.img.substr(0,1).c_str()[0];
+                        imgSend[i] = pos;
+                        img.img = img.img.substr(1);
+                        if (pos!='\0')
+                        {
+                            i++;
+                        }
+                        
+                    }
+                    cout<<imgSend<<endl;
+
                     if (idCard1 == 0)
                     {
                         idCard1 = ((struct message *)&buff_rx)->ID;
                         idPic1 = 10; //aqui se pone el id de la imagen mediante el algoritmo de busqueda
                         printf("[SERVER]: %d \n", idCard1);
                         buff_tx.ID=0; //significa que todavía no hay acción
-                        buff_tx.loadedPic=""; //buff_tx.Data=objeto buscado con id1
+                        strcpy(buff_tx.loadedPic, imgSend); //buff_tx.Data=objeto buscado con id1
                         write(connfd, (struct message *)&buff_tx, sizeof(buff_tx));
                     }
                     else
                     {
                         idCard2 = ((struct message *)&buff_rx)->ID;
-                        idPic2 = 10; //aqui se pone el id de la imagen mediante el algoritmo de busqueda
+                        idPic2 = 11; //aqui se pone el id de la imagen mediante el algoritmo de busqueda
                         printf("[SERVER]: %d \n", idCard2);
                         if (idPic1 == idPic2)
                         {
@@ -125,7 +141,7 @@ int server::start()
                         {
                             buff_tx.ID=-2;
                         }
-                        buff_tx.loadedPic=""; //buff_tx.Data=objeto buscado con id2
+                        strcpy(buff_tx.loadedPic, imgSend); //buff_tx.Data=objeto buscado con id2
                         write(connfd, (struct message *)&buff_tx, sizeof(buff_tx));
                         idCard1 = 0;
                         idPic1 = 0;

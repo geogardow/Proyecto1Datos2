@@ -15,17 +15,19 @@
 
 class cardSelector{
     private:
-    std::vector<Card> vectorCard;
+    std::vector<card> vectorCard;
     
     public:
-    Card getCard(int i, int j);
-    Card replace(int i, int j);
+    card getCard(int i, int j);
+    card replace(int i, int j);
     void createVector();
     void createFile();
-    Card loadFromFile(int i, int j); // if there is not card in matrix get it from the csv or to create a matrix
+    card loadFromFile(int i, int j);
     void loadToFile(int i, int j, int type, int status);
     void showVector();
     void shuffle();
+    void checkPair();
+    string choosePic(int idPic);
 };
 
 

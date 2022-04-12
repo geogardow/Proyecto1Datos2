@@ -3,6 +3,8 @@
 #include "button.h"
 #include "button.cpp"
 #include "client.cpp"
+#include "image.cpp"
+
 //#include "cardSelector.cpp"
 //#include "star.png"
 #ifndef WX_PRECOMP
@@ -24,6 +26,7 @@ public:
     Button* buttons[9][9];
     void CreateButtons();
     client c = client();
+    image img = image();
     int lastId;
 
 private:
@@ -107,18 +110,21 @@ void MyFrame::OnHello(wxCommandEvent& event)
 }
 void MyFrame::OnClick(wxCommandEvent& event)
 {
-    wxBitmap star("star2.png", wxBITMAP_TYPE_PNG);
-    struct client::message request;    
-    int idPos;
-    idPos = event.GetId();
-    struct client::message* answer;
+    wxBitmap star("assets/star.png", wxBITMAP_TYPE_PNG);
+    struct message request;  
+    int idPos = event.GetId();
     request.ID=idPos;
-    request.loadedPic= "";
-    answer = ((struct client::message *)(c.sendRequest(request)));
-    int instruction;
-    instruction = answer->ID;
-    buttons[idPos/10][idPos%10]->cardButton->SetBitmapLabel({gammasoft_64x64_xpm}); //reemplazar {gammasoft_64x64_xpm} por wxBitmap(answer->loadedPic, wxBITMAP_TYPE_PNG)
-     
+    strcpy(request.loadedPic, "");
+    struct message* answer;
+    answer = ((struct message *)(c.sendRequest(request)));
+    int instruction = answer->ID;
+    cout<<"Bouta cry"<<endl;
+    cout<<answer->loadedPic<<endl;
+    img.img = answer->loadedPic;
+    img.decodeImage();
+    
+    buttons[idPos/10][idPos%10]->cardButton->SetBitmapLabel({wxBitmap("temp.png", wxBITMAP_TYPE_PNG)});
+    
     if (instruction == 0)
     {
         printf("CLIENT: Falta 1 carta de presionar \n");
@@ -140,7 +146,7 @@ void MyFrame::OnClick(wxCommandEvent& event)
 }
 void MyFrame::CreateButtons()
 {
-    wxBitmap star("star2.png", wxBITMAP_TYPE_PNG);
+    wxBitmap star("assets/star.png", wxBITMAP_TYPE_PNG);
     int x = 50;
     int y = 50;
     for(int i = 1; i < 9 ; i++){

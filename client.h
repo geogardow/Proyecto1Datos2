@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <string>
 #include "card.h"
+#include "message.cpp"
 using namespace std;
 
 #ifndef PROYECTO1DATOS2_CLIENT_H
@@ -19,10 +20,6 @@ public:
     client();
     int sockfd; 
     struct sockaddr_in servaddr;
-    struct message {
-        int ID;
-        string loadedPic;
-    };
     struct message* sendRequest(struct message position);
     int instruction = 0;
 

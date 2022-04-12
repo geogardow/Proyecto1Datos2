@@ -1,1 +1,0 @@
-CMakeLists.txt not found in /home/geogardow/Desktop/Proyecto1Datos2 Select CMakeLists.txt
