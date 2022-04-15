@@ -4,6 +4,11 @@
 #include "button.cpp"
 #include "client.cpp"
 #include "image.cpp"
+#include <chrono>
+#include <thread>
+
+using namespace std::this_thread;
+using namespace std::chrono;
 
 //#include "cardSelector.cpp"
 //#include "star.png"
@@ -118,13 +123,13 @@ void MyFrame::OnClick(wxCommandEvent& event)
     struct message* answer;
     answer = ((struct message *)(c.sendRequest(request)));
     int instruction = answer->ID;
-    cout<<"Bouta cry"<<endl;
     cout<<answer->loadedPic<<endl;
-    img.img = answer->loadedPic;
-    img.decodeImage();
+    //img.img = answer->loadedPic;
+    //img.decodeImage();
     
-    buttons[idPos/10][idPos%10]->cardButton->SetBitmapLabel({wxBitmap("temp.png", wxBITMAP_TYPE_PNG)});
-    
+    buttons[idPos/10][idPos%10]->cardButton->SetBitmapLabel({wxBitmap(answer->loadedPic, wxBITMAP_TYPE_PNG)});
+    buttons[idPos/10][idPos%10]->cardButton->Enable(false);
+
     if (instruction == 0)
     {
         printf("CLIENT: Falta 1 carta de presionar \n");
@@ -138,8 +143,11 @@ void MyFrame::OnClick(wxCommandEvent& event)
     else
     {
         printf("CLIENT: No son iguales \n");
+        wxMessageBox("Perdiste tu turno");
         buttons[lastId/10][lastId%10]->cardButton->SetBitmapLabel(star);
         buttons[idPos/10][idPos%10]->cardButton->SetBitmapLabel(star);
+        buttons[lastId/10][lastId%10]->cardButton->Enable(true);
+        buttons[idPos/10][idPos%10]->cardButton->Enable(true);
     }
     
 

@@ -11,6 +11,7 @@
 #include "card.h"
 #include "message.cpp"
 #include "image.cpp"
+#include "cardSelector.cpp"
 using namespace std;
 
 #ifndef PROYECTO1DATOS2_SERVER_H
@@ -22,6 +23,7 @@ private:
     unsigned int len;
     struct sockaddr_in servaddr, client; 
     int  len_rx, len_tx = 0;
+    cardSelector matrix = cardSelector();
     image img = image();
     char picture[30000];
     struct message buff_tx;
@@ -30,6 +32,8 @@ private:
     int idCard2=0;
     int idPic1=0;
     int idPic2=0;
+    card card1 = card(0,0,0,0);
+    card card2 = card(0,0,0,0);
 
 public:
     server();

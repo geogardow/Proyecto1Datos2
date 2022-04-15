@@ -9,5 +9,5 @@ card::card(int i, int j, int idPic, int status){
 }
 
 void card::print(){
-    std::cout<<this->idPic<<" "<<this->img<<" "<<this->status<<std::endl;
+    std::cout<<this->i*10+this->j<<" "<<this->idPic<<" "<<this->img<<" "<<this->status<<std::endl;
 }

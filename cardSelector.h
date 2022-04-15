@@ -16,17 +16,20 @@
 class cardSelector{
     private:
     std::vector<card> vectorCard;
-    
+    int cardsAvailable = 64;
+    bool FLAG;
+
     public:
+    cardSelector();
     card getCard(int i, int j);
     card replace(int i, int j);
-    void createVector();
+    void createVector(int size);
     void createFile();
     card loadFromFile(int i, int j);
     void loadToFile(int i, int j, int type, int status);
     void showVector();
     void shuffle();
-    void checkPair();
+    void deleteCard(int i, int j);
     string choosePic(int idPic);
 };
 

@@ -22,7 +22,6 @@ class card{
     string img;
     //unsigned char byte_array[1000] = {0};
     card(int i , int j , int idPic , int status);
-    void getImage(int idPic);
     void print();
 
 };
