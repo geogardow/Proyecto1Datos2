@@ -6,12 +6,6 @@
 #include "image.cpp"
 #include <chrono>
 #include <thread>
-
-using namespace std::this_thread;
-using namespace std::chrono;
-
-//#include "cardSelector.cpp"
-//#include "star.png"
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
@@ -23,6 +17,22 @@ class MyApp : public wxApp
 public:
     virtual bool OnInit();
 };
+
+class Start : public wxFrame
+{
+public:
+    Start(const wxString& title, const wxPoint& pos, const wxSize& size);
+    wxPanel* panel = new wxPanel(this);
+    wxTextCtrl* textBoxP1;
+    wxTextCtrl* textBoxP2;
+    wxString player1;
+    wxString player2;  
+ 
+private:
+
+    void ClickStart(wxCommandEvent& event);
+};
+
 class MyFrame : public wxFrame
 {
 public:
@@ -31,8 +41,14 @@ public:
     Button* buttons[9][9];
     void CreateButtons();
     client c = client();
-    image img = image();
+    image interfaceImageMan = image();
     int lastId;
+    wxString name1;
+    wxString name2;
+    wxStaticText* labelP1 = new wxStaticText(panel, wxID_ANY, wxT("") ,wxPoint(900,900/3-384/2+175));
+    wxStaticText* labelP2 = new wxStaticText(panel, wxID_ANY, wxT("") ,wxPoint(900,2*900/3-384/2+125));
+    wxStaticText* points1;
+    wxStaticText* points2;
 
 private:
        
@@ -42,6 +58,7 @@ private:
     void OnClick(wxCommandEvent& event);
 
 };
+
 enum
 {
     ID_Hello = 1
@@ -50,32 +67,53 @@ wxIMPLEMENT_APP(MyApp);
 
 bool MyApp::OnInit()
 {
-    MyFrame *frame = new MyFrame( "Memory Game", wxPoint(50, 50), wxSize(1200, 900));
+    Start *frame = new Start( "Memory Game", wxPoint(50, 50), wxSize(1200, 900));
     frame->Show(true);
     frame->SetMinSize(wxSize(1200, 900));
     frame->SetMaxSize(wxSize(1200, 900));
-    frame->CreateButtons();
-
-    //cardSelector *matrix = new cardSelector();
-    //matrix->createFile();
-    //matrix->createVector();
-    //matrix->showVector();
-
-    //cout<<"****************************************"<<endl;
-    //matrix->loadFromFile(1,4);
-    //matrix->loadFromFile(2,3);
-    //cout<<"****************************************"<<endl;
-    //matrix->getCard(2,3);
-    //cout<<"****************************************"<<endl;
-    //matrix->getCard(7,4);
-    //cout<<"****************************************"<<endl;
-    //delete matrix;
 
     return true;
 }
+Start::Start(const wxString& title, const wxPoint& pos, const wxSize& size)
+    : wxFrame(NULL, wxID_ANY, title, pos, size)
+{
+    wxStaticBitmap* titlePic = new wxStaticBitmap(panel, wxID_ANY, {"title.png", wxBITMAP_TYPE_PNG}, {1200/2-512/2, 0}, {512, 256});
+    wxStaticBitmap* player1Pic = new wxStaticBitmap(panel, wxID_ANY, {"start1.png", wxBITMAP_TYPE_PNG}, {1200/2-384/2, 900/3-384/2+100}, {384, 192});
+    wxStaticBitmap* player2Pic = new wxStaticBitmap(panel, wxID_ANY, {"start2.png", wxBITMAP_TYPE_PNG}, {1200/2-384/2, 2*900/3-384/2+50}, {384, 192});
+    this->textBoxP1 = new wxTextCtrl(panel, wxID_ANY, wxT(""),wxPoint(1200/2-45, 900/3-384/2+300));
+    this->textBoxP2 = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(1200/2-45, 2*900/3-384/2+250));
+    wxButton *btn_start =new wxButton(panel,1, wxT("Start"), wxPoint(1200/2-40, 750));
+    Connect(1, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Start::ClickStart));
+}
+
+void Start::ClickStart(wxCommandEvent& event){
+
+    if (this->textBoxP1->IsEmpty()==false && this->textBoxP2->IsEmpty()== false){
+        this->player1 = this->textBoxP1->GetValue();
+        this->player2 = this->textBoxP2->GetValue();
+        MyFrame *frame = new MyFrame( "Memory Game", wxPoint(50, 50), wxSize(1200, 900));
+        frame->labelP1->SetLabel(this->player1);
+        frame->labelP2->SetLabel(this->player2);
+        frame->name1 = this->player1;
+        frame->name2 = this->player2;
+        frame->Show(true);
+        frame->SetMinSize(wxSize(1200, 900));
+        frame->SetMaxSize(wxSize(1200, 900));
+        frame->CreateButtons();
+        Close(true);
+    }else{
+        wxMessageBox("You must add a name");  
+    }
+}
+
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     : wxFrame(NULL, wxID_ANY, title, pos, size)
 {
+    wxStaticBitmap* player1Pic = new wxStaticBitmap(panel, wxID_ANY, {"inGame1.png", wxBITMAP_TYPE_PNG}, {900, 900/3-384/2+100}, {128, 64});
+    wxStaticBitmap* player2Pic = new wxStaticBitmap(panel, wxID_ANY, {"inGame2.png", wxBITMAP_TYPE_PNG}, {900, 2*900/3-384/2+50}, {128, 64});
+    points1 = new wxStaticText(panel, wxID_ANY, wxT("0"),wxPoint(900,900/3-384/2+200));
+    points2 = new wxStaticText(panel, wxID_ANY, wxT("0"),wxPoint(900,2*900/3-384/2+150));
+
     wxMenu *menuFile = new wxMenu;
     menuFile->Append(ID_Hello, "&Hello...\tCtrl-H",
                      "Help string shown in status bar for this menu item");
@@ -86,11 +124,6 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     wxMenuBar *menuBar = new wxMenuBar;
     menuBar->Append(menuFile, "&File");
     menuBar->Append(menuHelp, "&Help");
-
-
-    //button2->Bind(wxEVT_BUTTON, [&](wxCommandEvent& event) {
-      //  staticText2->SetLabel(wxString::Format("button2 clicked %d times", something));
-      //});
 
     SetMenuBar( menuBar );
     CreateStatusBar();
@@ -116,18 +149,18 @@ void MyFrame::OnHello(wxCommandEvent& event)
 void MyFrame::OnClick(wxCommandEvent& event)
 {
     wxBitmap star("assets/star.png", wxBITMAP_TYPE_PNG);
-    struct message request;  
     int idPos = event.GetId();
-    request.ID=idPos;
-    strcpy(request.loadedPic, "");
+    client c = client();
+    struct message request;
+    request.ID = idPos;
+    request.instruction = 0;
     struct message* answer;
-    answer = ((struct message *)(c.sendRequest(request)));
-    int instruction = answer->ID;
-    cout<<answer->loadedPic<<endl;
-    //img.img = answer->loadedPic;
-    //img.decodeImage();
+    answer = c.sendRequest(request);
+    interfaceImageMan.img = c.imageReceived;
+    interfaceImageMan.decodeImage();
+    int instruction = answer->instruction;
     
-    buttons[idPos/10][idPos%10]->cardButton->SetBitmapLabel({wxBitmap(answer->loadedPic, wxBITMAP_TYPE_PNG)});
+    buttons[idPos/10][idPos%10]->cardButton->SetBitmapLabel({wxBitmap("temp.png", wxBITMAP_TYPE_PNG)});
     buttons[idPos/10][idPos%10]->cardButton->Enable(false);
 
     if (instruction == 0)
@@ -138,7 +171,6 @@ void MyFrame::OnClick(wxCommandEvent& event)
     else if (instruction == -1)
     {
         printf("CLIENT: Son iguales \n");
-        //desabilitar las cartas
     } 
     else
     {
@@ -149,8 +181,6 @@ void MyFrame::OnClick(wxCommandEvent& event)
         buttons[lastId/10][lastId%10]->cardButton->Enable(true);
         buttons[idPos/10][idPos%10]->cardButton->Enable(true);
     }
-    
-
 }
 void MyFrame::CreateButtons()
 {
@@ -168,4 +198,3 @@ void MyFrame::CreateButtons()
         y = y + 90;
     }
 }
-

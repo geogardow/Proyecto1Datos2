@@ -16,14 +16,10 @@ using namespace std;
 
 
 class card{
-
     public:
-    int i, j, idPic, status;
-    string img;
-    //unsigned char byte_array[1000] = {0};
     card(int i , int j , int idPic , int status);
-    void print();
-
+    string img;
+    int i, j, idPic, status;
 };
 
 #endif //PROYECTO1DATOS2_CARD_H

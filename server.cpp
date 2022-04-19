@@ -90,7 +90,6 @@ int server::start()
             {
                 /* read client message, copy it into buffer */
                 len_rx = read(connfd, (char *)&buff_rx, sizeof(buff_rx));
-                int actualCardID = ((struct message *)&buff_rx)->ID;
 
                 if (len_rx == -1)
                 {
@@ -104,57 +103,57 @@ int server::start()
                 }
                 else
                 {
-                    int actualPicID = matrix.getCard(actualCardID/10, actualCardID%10).idPic;
-                    img.encodeImage(matrix.choosePic(actualPicID));
+                    actualCardID = buff_rx.ID;
+                    actualCard = matrix.getCard(actualCardID/10, actualCardID%10);
+                    actualPicID = actualCard.idPic;
+                    printf("[SERVER]: PACKAGE RECEIVED FROM CLIENT, CONTAINS ID AND INSTRUCTION  \n");
+                    //serverImageMan.encodeImage(matrix.choosePic(actualPicID));
                     
-                    //char imgSend[30000];
-                    //int i = 0;
-                    //while (img.img.size() > 0)
-                    //{
-                    //    char pos = img.img.substr(0,1).c_str()[0];
-                    //    imgSend[i] = pos;
-                    //    img.img = img.img.substr(1);
-                    //    if (pos!='\0')
-                    //    {
-                    //        i++;
-                    //    }
-                    //}
+                    buff_tx.ID = actualCard.img.size();
 
-                    //cout<<img.img<<endl;
+                    printf("[SERVER]: PROCEEDING TO ANALIZE HOW MANY CARDS HAVE BEEN CLICKED AND IF THEY MATCHED \n");
 
                     if (idCard1 == 0)
                     {
+                        printf("[SERVER]: FIRST CARD CLICKED \n");
                         idCard1 = actualCardID;
                         idPic1 = actualPicID; //aqui se pone el id de la imagen mediante el algoritmo de busqueda
                         printf("[SERVER]: %d \n", idCard1);
-                        buff_tx.ID=0; //significa que todavía no hay acción
-                        strcpy(buff_tx.loadedPic, matrix.choosePic(actualPicID).c_str()); //buff_tx.Data=objeto buscado con id1
-                        write(connfd, (struct message *)&buff_tx, sizeof(buff_tx));
+                        buff_tx.instruction = 0; //significa que todavía no hay acción
                     }
-                    else
+                    else if (idCard1 != 0)
                     {
+                        printf("[SERVER]: SECOND CARD CLICKED \n");
                         idCard2 = actualCardID;
                         idPic2 = actualPicID; //aqui se pone el id de la imagen mediante el algoritmo de busqueda
                         printf("[SERVER]: %d \n", idCard2);
                         if (idPic1 == idPic2)
                         {
-                            buff_tx.ID=-1;
+                            printf("[SERVER]: CARDS MATCHED \n");
+                            buff_tx.instruction = -1;
                             matrix.deleteCard(idCard1/10, idCard1%10);
                             matrix.deleteCard(idCard2/10, idCard2%10);
                             matrix.shuffle();
                         }
                         else
                         {
-                            buff_tx.ID=-2;
+                            printf("[SERVER]: CARDS DID NOT MATCH \n");
+                            buff_tx.instruction = -2;
                         }
-                        strcpy(buff_tx.loadedPic, matrix.choosePic(actualPicID).c_str()); //buff_tx.Data=objeto buscado con id2
-                        write(connfd, (struct message *)&buff_tx, sizeof(buff_tx));
                         idCard1 = 0;
                         idPic1 = 0;
                         idCard2 = 0;
                         idPic2 = 0;
                     }
-                    
+
+                    printf("[SERVER]: PROCEEDING TO SEND SIZE OF THE NEXT PACKAGE AND INSTRUCTION \n");
+                    printf("[SERVER]: SIZE %d \n", buff_tx.ID);
+                    printf("[SERVER]: INSTRUCTION %d \n", buff_tx.instruction);
+                    write(connfd, (struct message *)&buff_tx, sizeof(buff_tx));
+
+                    printf("[SERVER]: PROCEEDING TO SEND THE PACKAGE WITH THE IMAGE \n");
+                    write(connfd, actualCard.img.data(), actualCard.img.size());
+
                     close(connfd);
                     break;
                 }

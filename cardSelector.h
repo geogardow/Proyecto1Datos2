@@ -21,16 +21,17 @@ class cardSelector{
 
     public:
     cardSelector();
+    void loadToFile(int i, int j, int type, int status);
+    card loadFromFile(int i, int j);
+    void createFile();
+    void createVector(int size);
     card getCard(int i, int j);
     card replace(int i, int j);
-    void createVector(int size);
-    void createFile();
-    card loadFromFile(int i, int j);
-    void loadToFile(int i, int j, int type, int status);
+    void deleteCard(int i, int j);
     void showVector();
     void shuffle();
-    void deleteCard(int i, int j);
     string choosePic(int idPic);
+
 };
 
 

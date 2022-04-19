@@ -2,15 +2,17 @@
 #define PROYECTO1DATOS2_IMAGE_H
 #include <iostream>
 #include <fstream>
-#include <string>
+#include <string> 
+
+using namespace std;
 
 class image
 {
 public:
     image();
     char ch;
-    std::string img;
-    void encodeImage(std::string picture);
+    string img;
+    void encodeImage(string path);
     void decodeImage();
 };
     

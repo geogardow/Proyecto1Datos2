@@ -18,10 +18,12 @@ using namespace std;
 class client {
 public:
     client();
+    string imageReceived;
     int sockfd; 
     struct sockaddr_in servaddr;
-    struct message* sendRequest(struct message position);
+    struct message* sendRequest(struct message request);
     int instruction = 0;
+    int size = 0;
 
 private:
     struct message buf_tx;      

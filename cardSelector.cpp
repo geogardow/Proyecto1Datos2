@@ -24,12 +24,17 @@ cardSelector::cardSelector(){
 }
 
 card cardSelector::loadFromFile(int i, int j){
+    image selectorImageMan = image();
     file.open("cards.txt", ios::in | ios::out | ios::binary);
-    file.seekg((i-1)*(16)*sizeof(empty)+(j-1)*sizeof(empty), ios::beg);
+    file.seekg((i-1)*(8)*sizeof(empty)+(j-1)*sizeof(empty), ios::beg);
     char *buffer = (char*) malloc(sizeof(empty));
     file.read(buffer, sizeof(empty));
     empty* emptyCard = (empty*) buffer;
     card newCard = card(emptyCard->i,emptyCard->j, emptyCard->idPic, emptyCard->status);
+    selectorImageMan.encodeImage(this->choosePic(newCard.idPic));
+    newCard.img = selectorImageMan.img;
+    // this->selectorImageMan.decodeImage();
+    cout<<"[CardSelector]: THIS IS THE RANDOM CARD SELECTED. POS: "<<newCard.i<<newCard.j<< " PIC ID: "<<newCard.idPic<<endl;
     file.close();
     free(buffer);
     buffer = NULL;
@@ -43,7 +48,7 @@ void cardSelector::loadToFile(int i, int j, int idPic, int status){
     emptyCard.idPic = idPic;
     emptyCard.status = status;
     file.open("cards.txt", ios::in | ios::out | ios::binary);
-    file.seekg(((i-1)*(16)*sizeof(empty)+(j-1)*sizeof(empty)),ios::beg);
+    file.seekg(((i-1)*(8)*sizeof(empty)+(j-1)*sizeof(empty)),ios::beg);
     file.write((char*)&emptyCard, sizeof(empty));
     file.close();
 }
@@ -165,18 +170,7 @@ void cardSelector::deleteCard(int i, int j){
 
 void cardSelector::shuffle(){
     this->cardsAvailable = this->cardsAvailable - 2;
-    cout<<"\n CARDS AVAILABLE "<<this->cardsAvailable<<endl;
-    cout<<"\n MATCHED, PROCEED TO SHUFFLE"<<endl;
-    showVector();
-    cout<<"\n VECTOR AFTER SHUFFLE"<<endl;
     createVector(this->cardsAvailable/3);
-    showVector();
-}
-
-void cardSelector::showVector(){
-    for(int n = 0; n < this->vectorCard.size(); n++){
-        this->vectorCard[n].print();
-    }
 }
 
 string cardSelector::choosePic(int idPic){

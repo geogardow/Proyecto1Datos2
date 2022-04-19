@@ -24,16 +24,16 @@ private:
     struct sockaddr_in servaddr, client; 
     int  len_rx, len_tx = 0;
     cardSelector matrix = cardSelector();
-    image img = image();
-    char picture[30000];
+    image serverImageMan = image();
     struct message buff_tx;
     struct message buff_rx;
+    card actualCard = card(0,0,0,0);
     int idCard1=0;
     int idCard2=0;
     int idPic1=0;
     int idPic2=0;
-    card card1 = card(0,0,0,0);
-    card card2 = card(0,0,0,0);
+    int actualCardID=0;
+    int actualPicID=0;
 
 public:
     server();

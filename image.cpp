@@ -7,8 +7,8 @@ using namespace std;
 image::image(){
 }
 
-void image::encodeImage(std::string picture){
-    ifstream image(picture, ios::in | ios::binary);
+void image::encodeImage(string path){
+    ifstream image(path, ios::in | ios::binary);
 
     while(!image.eof())
     {
@@ -21,8 +21,6 @@ void image::encodeImage(std::string picture){
 
 void image::decodeImage(){
     ofstream image("temp.png", ios::out | ios::trunc);
-
-    cout<<img<<endl;
     while (img.size() > 0)
     {
         ch = img.substr(0,1).c_str()[0];
