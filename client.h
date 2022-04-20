@@ -18,6 +18,7 @@ using namespace std;
 class client {
 public:
     client();
+    bool START = true;
     string imageReceived;
     int sockfd; 
     struct sockaddr_in servaddr;

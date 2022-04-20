@@ -6,7 +6,11 @@ using namespace std;
 
 image::image(){
 }
-
+/**
+ * @brief Encodes a picture into an array of bites, given its path
+ * 
+ * @param path 
+ */
 void image::encodeImage(string path){
     ifstream image(path, ios::in | ios::binary);
 
@@ -17,8 +21,10 @@ void image::encodeImage(string path){
     }
     image.close();
 }
-
-
+/**
+ * @brief Decodes an array of bites and makes a picture
+ * 
+ */
 void image::decodeImage(){
     ofstream image("temp.png", ios::out | ios::trunc);
     while (img.size() > 0)

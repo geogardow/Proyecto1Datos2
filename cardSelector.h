@@ -15,11 +15,11 @@
 
 class cardSelector{
     private:
-    std::vector<card> vectorCard;
     int cardsAvailable = 64;
     bool FLAG;
 
     public:
+    std::vector<card> vectorCard;
     cardSelector();
     void loadToFile(int i, int j, int type, int status);
     card loadFromFile(int i, int j);
@@ -31,6 +31,10 @@ class cardSelector{
     void showVector();
     void shuffle();
     string choosePic(int idPic);
+    int pageFaults = 0;
+    int pageHits = 0;
+    int memory = 0;
+    bool HIT = false;
 
 };
 

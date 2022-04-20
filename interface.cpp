@@ -4,13 +4,9 @@
 #include "button.cpp"
 #include "client.cpp"
 #include "image.cpp"
-#include <chrono>
-#include <thread>
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
-
-
 
 class MyApp : public wxApp
 {
@@ -43,26 +39,24 @@ public:
     client c = client();
     image interfaceImageMan = image();
     int lastId;
+    int randomStart;
     wxString name1;
     wxString name2;
     wxStaticText* labelP1 = new wxStaticText(panel, wxID_ANY, wxT("") ,wxPoint(900,900/3-384/2+175));
     wxStaticText* labelP2 = new wxStaticText(panel, wxID_ANY, wxT("") ,wxPoint(900,2*900/3-384/2+125));
     wxStaticText* points1;
     wxStaticText* points2;
+    wxStaticBitmap* turn1 = new wxStaticBitmap(panel, wxID_ANY, {"check.png", wxBITMAP_TYPE_PNG}, {1000, 900/3-384/2+100}, {128, 64});
+    wxStaticBitmap* turn2 = new wxStaticBitmap(panel, wxID_ANY, {"check.png", wxBITMAP_TYPE_PNG}, {1000, 2*900/3-384/2+50}, {128, 64});
+    void updatePoints(int player, int points);
+    void updateTurn(int player);
 
 private:
        
-    void OnHello(wxCommandEvent& event);
-    void OnExit(wxCommandEvent& event);
-    void OnAbout(wxCommandEvent& event);
     void OnClick(wxCommandEvent& event);
 
 };
 
-enum
-{
-    ID_Hello = 1
-};
 wxIMPLEMENT_APP(MyApp);
 
 bool MyApp::OnInit()
@@ -74,6 +68,13 @@ bool MyApp::OnInit()
 
     return true;
 }
+/**
+ * @brief Construct a new Start:: Start object
+ * 
+ * @param title 
+ * @param pos 
+ * @param size 
+ */
 Start::Start(const wxString& title, const wxPoint& pos, const wxSize& size)
     : wxFrame(NULL, wxID_ANY, title, pos, size)
 {
@@ -85,7 +86,11 @@ Start::Start(const wxString& title, const wxPoint& pos, const wxSize& size)
     wxButton *btn_start =new wxButton(panel,1, wxT("Start"), wxPoint(1200/2-40, 750));
     Connect(1, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Start::ClickStart));
 }
-
+/**
+ * @brief Saves the names of the players and then opens a frame
+ * 
+ * @param event 
+ */
 void Start::ClickStart(wxCommandEvent& event){
 
     if (this->textBoxP1->IsEmpty()==false && this->textBoxP2->IsEmpty()== false){
@@ -96,6 +101,8 @@ void Start::ClickStart(wxCommandEvent& event){
         frame->labelP2->SetLabel(this->player2);
         frame->name1 = this->player1;
         frame->name2 = this->player2;
+        struct message starterPack;
+        frame->updateTurn(frame->c.sendRequest(starterPack)->turn);
         frame->Show(true);
         frame->SetMinSize(wxSize(1200, 900));
         frame->SetMaxSize(wxSize(1200, 900));
@@ -105,52 +112,31 @@ void Start::ClickStart(wxCommandEvent& event){
         wxMessageBox("You must add a name");  
     }
 }
-
+/**
+ * @brief Construct a new My Frame:: My Frame object
+ * 
+ * @param title 
+ * @param pos 
+ * @param size 
+ */
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     : wxFrame(NULL, wxID_ANY, title, pos, size)
 {
     wxStaticBitmap* player1Pic = new wxStaticBitmap(panel, wxID_ANY, {"inGame1.png", wxBITMAP_TYPE_PNG}, {900, 900/3-384/2+100}, {128, 64});
     wxStaticBitmap* player2Pic = new wxStaticBitmap(panel, wxID_ANY, {"inGame2.png", wxBITMAP_TYPE_PNG}, {900, 2*900/3-384/2+50}, {128, 64});
-    points1 = new wxStaticText(panel, wxID_ANY, wxT("0"),wxPoint(900,900/3-384/2+200));
-    points2 = new wxStaticText(panel, wxID_ANY, wxT("0"),wxPoint(900,2*900/3-384/2+150));
+    points1 = new wxStaticText(panel, wxID_ANY, wxT("Points: 0"),wxPoint(900,900/3-384/2+200));
+    points2 = new wxStaticText(panel, wxID_ANY, wxT("Points: 0"),wxPoint(900,2*900/3-384/2+150));
 
-    wxMenu *menuFile = new wxMenu;
-    menuFile->Append(ID_Hello, "&Hello...\tCtrl-H",
-                     "Help string shown in status bar for this menu item");
-    menuFile->AppendSeparator();
-    menuFile->Append(wxID_EXIT);
-    wxMenu *menuHelp = new wxMenu;
-    menuHelp->Append(wxID_ABOUT);
-    wxMenuBar *menuBar = new wxMenuBar;
-    menuBar->Append(menuFile, "&File");
-    menuBar->Append(menuHelp, "&Help");
-
-    SetMenuBar( menuBar );
-    CreateStatusBar();
-    SetStatusText("Algoritmos y Estructuras de Datos 2");
-
-    Bind(wxEVT_MENU, &MyFrame::OnHello, this, ID_Hello);
-    Bind(wxEVT_MENU, &MyFrame::OnAbout, this, wxID_ABOUT);
-    Bind(wxEVT_MENU, &MyFrame::OnExit, this, wxID_EXIT);
 }
-void MyFrame::OnExit(wxCommandEvent& event)
-{
-    Close(true);
-}
-void MyFrame::OnAbout(wxCommandEvent& event)
-{
-    wxMessageBox("This is a wxWidgets Hello World example",
-                 "About Hello World", wxOK | wxICON_INFORMATION);
-}
-void MyFrame::OnHello(wxCommandEvent& event)
-{
-    wxLogMessage("Algoritmos y Estructuras de Datos 2");
-}
+/**
+ * @brief Controls what happens when you click a button of the button matrix
+ * 
+ * @param event 
+ */
 void MyFrame::OnClick(wxCommandEvent& event)
 {
     wxBitmap star("assets/star.png", wxBITMAP_TYPE_PNG);
     int idPos = event.GetId();
-    client c = client();
     struct message request;
     request.ID = idPos;
     request.instruction = 0;
@@ -159,29 +145,71 @@ void MyFrame::OnClick(wxCommandEvent& event)
     interfaceImageMan.img = c.imageReceived;
     interfaceImageMan.decodeImage();
     int instruction = answer->instruction;
+    int idPic = answer->picID;
+    updatePoints(1, answer->pointsP1);
+    updatePoints(2, answer->pointsP2);
+    updateTurn(answer->turn);
     
     buttons[idPos/10][idPos%10]->cardButton->SetBitmapLabel({wxBitmap("temp.png", wxBITMAP_TYPE_PNG)});
     buttons[idPos/10][idPos%10]->cardButton->Enable(false);
 
     if (instruction == 0)
     {
-        printf("CLIENT: Falta 1 carta de presionar \n");
         lastId = idPos;
     }
     else if (instruction == -1)
     {
-        printf("CLIENT: Son iguales \n");
+        if (idPic == 1)
+        {
+            wxMessageBox("You're lucky today, you get an extra turn!");
+        }
+        else if (idPic == 2)
+        {
+            wxMessageBox("You're lucky today, you just doubled your points!");
+        }
+        else if (idPic == 3 && answer->switched == 1)
+        {
+            wxMessageBox("You are very lucky! You just exchanged points with your oponent!");
+        }
+        else if (idPic == 4)
+        {
+            wxMessageBox("Oh no, you got that one, your oponent loses one point!");
+        }
+        if (answer->HIT == 1)
+        {
+            wxMessageBox("You're very lucky! Both of the cards were loaded in memory! You got an extra point!");
+        }
+        
     } 
     else
     {
-        printf("CLIENT: No son iguales \n");
         wxMessageBox("Perdiste tu turno");
         buttons[lastId/10][lastId%10]->cardButton->SetBitmapLabel(star);
         buttons[idPos/10][idPos%10]->cardButton->SetBitmapLabel(star);
         buttons[lastId/10][lastId%10]->cardButton->Enable(true);
         buttons[idPos/10][idPos%10]->cardButton->Enable(true);
     }
+
+    if (answer->winner == 1)
+    {
+        wxMessageBox("Felicidades el ganador es: "+this->name1);
+        Close(true);
+    }
+    else if (answer->winner == 2)
+    {
+        wxMessageBox("Felicidades el ganador es: "+this->name2);
+        Close(true);
+    }
+    else if (answer->winner == 3)
+    {
+        wxMessageBox("Oh no, hubo un empate");
+        Close(true);
+    }
 }
+/**
+ * @brief Creates the matrix of buttons
+ * 
+ */
 void MyFrame::CreateButtons()
 {
     wxBitmap star("assets/star.png", wxBITMAP_TYPE_PNG);
@@ -196,5 +224,38 @@ void MyFrame::CreateButtons()
         }
         x = 50;
         y = y + 90;
+    }
+}
+/**
+ * @brief Updates the label of points
+ * 
+ * @param player 
+ * @param points 
+ */
+void MyFrame::updatePoints(int player, int points){
+    if(player == 1)
+    {
+        this->points1->SetLabel("Points: " + to_string(points));
+    }
+    else if(player == 2)
+    {
+        this->points2->SetLabel("Points: " + to_string(points));
+    }
+}
+/**
+ * @brief Updates the turn of the player
+ * 
+ * @param player 
+ */
+void MyFrame::updateTurn(int player){
+    if(player == 1)
+    {
+        this->turn1->Show(true);
+        this->turn2->Show(false);
+    }
+    else if(player == 2)
+    {
+        this->turn1->Show(false);
+        this->turn2->Show(true);
     }
 }

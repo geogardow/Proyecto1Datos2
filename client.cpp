@@ -12,13 +12,19 @@
 #include <chrono>
 #include <thread>
 
-#define SERVER_ADDRESS  "192.168.0.8"
+#define SERVER_ADDRESS  "172.18.227.171"
 #define PORT            8080 
 
 client::client(){
     
 }
 
+/**
+ * @brief In charge of requesting information from the server in order to update the interface
+ * 
+ * @param request 
+ * @return struct message* 
+ */
 struct message*  client::sendRequest(struct message request){ 
 
     /* Socket creation */
@@ -26,7 +32,7 @@ struct message*  client::sendRequest(struct message request){
     sockfd = socket(AF_INET, SOCK_STREAM, 0); 
     if (sockfd == -1) 
     { 
-        printf("CLIENT: socket creation failed...\n"); 
+        cout<<"[CLIENT-error]: socket creation failed...\n"<<endl;
     } 
     
     /* memory space cleaning */
@@ -40,34 +46,35 @@ struct message*  client::sendRequest(struct message request){
     /* try to connect the client socket to server socket */
     if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) != 0) 
     { 
-        printf("connection with the server failed...\n");  
+        cout<<"[CLIENT-error]: connection with the server failed...\n"<<endl;
     } 
-    
-    printf("connected to the server..\n");
 
-    write(sockfd, (struct message *)&buf_tx, sizeof(buf_tx));
-    printf("CLIENT: ID SENT, WAITING FOR SIZE OF THE NEXT PACKAGE \n");    
+    if (START)
+    {   
+        read(sockfd, (struct message *)&buf_rx, sizeof(buf_rx)); //CLIENT: RECEIVES THE FIRST PLAYER
+        this->START = false;
+        struct message* answer;
+        answer = ((struct message *)&buf_rx); //CLIENT: RETURNED THE STRUCT WITH THE DATA
+        close(sockfd); 
+        return answer;
+    }
 
-    read(sockfd, (struct message *)&buf_rx, sizeof(buf_rx));
-    printf("CLIENT: SIZE AND INSTRUCTION OF PACKAGE RECEIVED \n");
+    write(sockfd, (struct message *)&buf_tx, sizeof(buf_tx)); //CLIENT: ID SENT, WAITING FOR SIZE OF THE NEXT PACKAGE    
+
+    read(sockfd, (struct message *)&buf_rx, sizeof(buf_rx)); //CLIENT: SIZE AND INSTRUCTION OF PACKAGE RECEIVED
 
     imageReceived.clear();
     size = buf_rx.ID;
     instruction = buf_rx.instruction;
     
-    printf("CLIENT: RECEIVED SIZE %d \n", size);
-    printf("CLIENT: RECEIVED INSTRUCTION: %d \n", instruction);
-    printf("CLIENT: WAITING FOR PACKAGE WITH THE IMAGE \n");
-
     char* temp = (char*)malloc(sizeof(char) * size);
-    read(sockfd, temp, size);
+    read(sockfd, temp, size); //CLIENT: WAITING FOR PACKAGE WITH THE IMAGE
     for(int i = 0; i < size; i++){
         imageReceived.push_back(*(temp+i));
     }
 
     struct message* answer;
-    answer = ((struct message *)&buf_rx);
-    printf("CLIENT: RETURNED THE STRUCT WITH THE DATA \n");
+    answer = ((struct message *)&buf_rx); //CLIENT: RETURNED THE STRUCT WITH THE DATA
        
     /* close the socket */
     close(sockfd); 

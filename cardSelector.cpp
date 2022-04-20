@@ -17,12 +17,21 @@ struct empty
 {
     int i, j, idPic, status;
 };
-
+/**
+ * @brief Construct a new card Selector::card Selector object
+ * 
+ */
 cardSelector::cardSelector(){
     createFile();
     createVector(cardsAvailable/3);
 }
-
+/**
+ * @brief Loads the data of the cards from a binary file
+ * 
+ * @param i 
+ * @param j 
+ * @return card 
+ */
 card cardSelector::loadFromFile(int i, int j){
     image selectorImageMan = image();
     file.open("cards.txt", ios::in | ios::out | ios::binary);
@@ -33,14 +42,19 @@ card cardSelector::loadFromFile(int i, int j){
     card newCard = card(emptyCard->i,emptyCard->j, emptyCard->idPic, emptyCard->status);
     selectorImageMan.encodeImage(this->choosePic(newCard.idPic));
     newCard.img = selectorImageMan.img;
-    // this->selectorImageMan.decodeImage();
-    cout<<"[CardSelector]: THIS IS THE RANDOM CARD SELECTED. POS: "<<newCard.i<<newCard.j<< " PIC ID: "<<newCard.idPic<<endl;
     file.close();
     free(buffer);
     buffer = NULL;
     return newCard;
 }
-
+/**
+ * @brief Saves a card into the binary file
+ * 
+ * @param i 
+ * @param j 
+ * @param idPic 
+ * @param status 
+ */
 void cardSelector::loadToFile(int i, int j, int idPic, int status){
     empty emptyCard;
     emptyCard.i = i;
@@ -52,45 +66,66 @@ void cardSelector::loadToFile(int i, int j, int idPic, int status){
     file.write((char*)&emptyCard, sizeof(empty));
     file.close();
 }
-
+/**
+ * @brief Checks if the card is in the vector or if it has to load
+ * 
+ * @param i 
+ * @param j 
+ * @return card 
+ */
 card cardSelector::getCard(int i, int j){
     this->FLAG = false;
     int actualSize = this->vectorCard.size();
     for(int n = 0; n < actualSize; n++){
         if (this->vectorCard[n].i == i && this->vectorCard[n].j == j){
             this->FLAG = true; //Card found in vector
+            pageHits++;
+            HIT = true;
+            cout<<"[SERVER]: PageHits: "<<this->pageHits<<endl;
+            cout<<"[SERVER]: PageFaults: "<<this->pageFaults<<"\n"<<endl;
             return this->vectorCard[n];
         }
     }
     if (FLAG == false){ //Card is not found in vector
         card card = replace(i,j);
+        pageFaults++;
+        HIT = false;
+        cout<<"[SERVER]: PageHits: "<<this->pageHits<<endl;
+        cout<<"[SERVER]: PageFaults: "<<this->pageFaults<<"\n"<<endl;
         return card;
     }
 }
-
+/**
+ * @brief Creates the binary file
+ * 
+ */
 void cardSelector::createFile(){
     srand(time(0));
     FILE* toTest = fopen("toTest.csv", "a");
     vector<int> vect{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32};
     int cardsLeft = this->cardsAvailable;
-    int random;
+    int randomNum;
     for (int i = 1; i <= 8; i++){
         for (int j = 1; j<=8; j++){
-            random = rand()%cardsLeft;
-            int n = vect[random];
+            randomNum = rand()%cardsLeft;
+            int n = vect[randomNum];
             loadToFile(i,j,n,0);
             fprintf(toTest, "%d, %d \n",i*10+j, n);
-            vect.erase(vect.begin()+random);
+            vect.erase(vect.begin()+randomNum);
             cardsLeft = cardsLeft - 1;
         }
     }
     fclose(toTest);  
 }
-
+/**
+ * @brief Creates the vector that contains the third part of the cards allowed
+ * 
+ * @param size 
+ */
 void cardSelector::createVector(int size){
     srand(time(0));
     this->vectorCard.clear();
-    cout<<"NEW VECTOR SIZE "<<size<<endl;
+    cout<<"[SERVER]: New vector size: "<<size<<endl;
     std::vector<int> usedPairs;
     int m = 1;
     while (m <= size)
@@ -134,9 +169,16 @@ void cardSelector::createVector(int size){
             }
         }
     }
+    showVector();
     
 }
-
+/**
+ * @brief Replaces a card with another given the position
+ * 
+ * @param i 
+ * @param j 
+ * @return card 
+ */
 card cardSelector::replace(int i, int j){
     srand(time(0));
     if (this->vectorCard.size() > 0)
@@ -154,7 +196,12 @@ card cardSelector::replace(int i, int j){
     this->vectorCard.push_back(card);
     return card;
 }
-
+/**
+ * @brief Deletes a card given the position
+ * 
+ * @param i 
+ * @param j 
+ */
 void cardSelector::deleteCard(int i, int j){
     int leftCards = this->vectorCard.size();
         for(int n = 0; n < leftCards; n++){
@@ -167,12 +214,33 @@ void cardSelector::deleteCard(int i, int j){
             }
         }
 }
-
+/**
+ * @brief Shuffles the cards
+ * 
+ */
 void cardSelector::shuffle(){
     this->cardsAvailable = this->cardsAvailable - 2;
     createVector(this->cardsAvailable/3);
 }
-
+/**
+ * @brief Shows the cards and calculates the memory usage
+ * 
+ */
+void cardSelector::showVector(){
+    memory = 0;
+    for (int n = 0; n < this->vectorCard.size(); n++)
+    {
+        cout<<n+1<<". POS: "<<vectorCard[n].i<<vectorCard[n].j<<" PIC ID: "<<vectorCard[n].idPic<<endl;
+        memory = memory + 16 + vectorCard[n].img.size();
+    }
+    cout<<"[SERVER]: Memory consumed: "<<memory<<" bites"<<endl;   
+}
+/**
+ * @brief Returns the path of the picture, give a picture ID
+ * 
+ * @param idPic 
+ * @return string 
+ */
 string cardSelector::choosePic(int idPic){
     switch (idPic)
     {
